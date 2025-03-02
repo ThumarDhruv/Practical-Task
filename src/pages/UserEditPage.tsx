@@ -1,53 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser, fetchUsers } from "../store/userSlice";
+import { fetchUsers, modifyUser } from "../store/userSlice";
 import { RootState, AppDispatch } from "../store/store";
 import { User } from "../types";
 
 const UserEditPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>(); // ✅ Ensure id is a string
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  // ✅ Fix Redux state access
+  // ✅ Find user by ID
   const user = useSelector((state: RootState) =>
-    state.users.users.find((u) => u.id === Number(id))
+    state.users.users.find((u) => u.id === id)
   );
 
-  // ✅ Fix initial form state
-  const [formData, setFormData] = useState<User>({
-    id: 0,
-    name: "",
-    email: "",
-    role: "",
-  });
+  // ✅ Use undefined instead of null to prevent unnecessary updates
+  const [formData, setFormData] = useState<User | undefined>(undefined);
 
-  // ✅ Fetch user if not available in state
+  // ✅ Fetch users only if missing, and set formData only when user changes
   useEffect(() => {
     if (!user) {
-      dispatch(fetchUsers()); // Fetch users if not already loaded
-    } else {
-      setFormData(user);
+      dispatch(fetchUsers()); // Fetch only if users are missing
     }
-  }, [dispatch, id, user]);
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user) {
+      setFormData(user); // Set form data only when user is available
+    }
+  }, [user]); // ✅ Only run when user changes
 
   // ✅ Handle input change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
+    if (!formData) return;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // ✅ Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(updateUser({ id: Number(id), user: formData })); // ✅ Dispatch with payload
-    navigate("/users"); // Redirect to user list
+    if (formData && id) {
+      dispatch(modifyUser({ id, user: formData })); // ✅ Dispatch update action
+      navigate("/users"); // ✅ Navigate after update
+    }
   };
 
-  if (!user) {
-    return <p className="text-center mt-6">User not found.</p>;
+  if (!formData) {
+    return <p className="text-center mt-6">Loading user data...</p>;
   }
 
   return (

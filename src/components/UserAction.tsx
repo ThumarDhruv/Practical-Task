@@ -1,14 +1,25 @@
 import React from "react";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  userId: number;
+  userId: string | number;
+  onDelete: (id: string | number) => void; 
 }
 
-const UserActions: React.FC<Props> = ({ userId }) => {
-  const handleEdit = () => alert(`Edit User ${userId}`);
-  const handleDelete = () => alert(`Delete User ${userId}`);
-  const handleView = () => alert(`View User ${userId}`);
+const UserActions: React.FC<Props> = ({ userId, onDelete }) => {
+  const navigate = useNavigate();
+
+  const handleEdit = () => navigate(`/users/edit/${userId}`);
+
+  
+  const handleView = () => navigate(`/users/view/${userId}`);
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      onDelete(userId);
+    }
+  };
 
   return (
     <div className="flex space-x-3">

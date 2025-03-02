@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
-import { loginUser } from "../api/auth";
+import { loginUser } from "../api/auth"; // ✅ Mock API
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
+  const [email, setEmail] = useState(""); // ✅ Store email input
+  const [password, setPassword] = useState(""); // ✅ Store password input
   const [error, setError] = useState<string | null>(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -14,11 +17,13 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await loginUser();
-      if (response?.data?.token) {
-        const token = response.data.token;
-        localStorage.setItem("token", token);
-        dispatch(login(token));
+      // ✅ Pass email & password to loginUser
+      const response = await loginUser(email, password);
+
+      if (response.token) {
+        // ✅ Fixed response handling
+        localStorage.setItem("token", response.token);
+        dispatch(login(response.token)); // ✅ Dispatch token to Redux store
         navigate("/dashboard");
       } else {
         setError("Invalid response from server. Token not received.");
@@ -42,7 +47,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Side - Login Form (Wider and More Centered) */}
+      {/* Right Side - Login Form */}
       <div className="w-full lg:w-3/5 flex items-center justify-center p-8 sm:p-12">
         <div className="w-full max-w-lg p-8 shadow-lg bg-white rounded-lg">
           <h2 className="text-3xl font-bold text-center mb-2">Sign In</h2>
@@ -59,6 +64,8 @@ const LoginPage: React.FC = () => {
                 type="email"
                 className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-blue-500"
                 placeholder="Enter your email"
+                value={email} // ✅ Controlled input
+                onChange={(e) => setEmail(e.target.value)} // ✅ Update email state
                 required
               />
             </div>
@@ -70,6 +77,8 @@ const LoginPage: React.FC = () => {
                 type="password"
                 className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-blue-500"
                 placeholder="Enter your password"
+                value={password} // ✅ Controlled input
+                onChange={(e) => setPassword(e.target.value)} // ✅ Update password state
                 required
               />
             </div>
