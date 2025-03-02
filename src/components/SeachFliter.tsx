@@ -1,14 +1,33 @@
 import React from "react";
 
-const SearchFilter: React.FC = () => {
+interface SearchFilterProps {
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  roleFilter: string;
+  onRoleChange: (value: string) => void;
+}
+
+const SearchFilter: React.FC<SearchFilterProps> = ({
+  searchQuery,
+  onSearchChange,
+  roleFilter,
+  onRoleChange,
+}) => {
   return (
-    <div className="mb-4 flex items-center space-x-4">
+    <div className="mb-4 flex flex-wrap gap-4">
       <input
         type="text"
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search users..."
-        className="p-2 border border-gray-300 rounded-md"
+        className="p-2 border border-gray-300 rounded-md w-full sm:w-64"
       />
-      <select className="p-2 border border-gray-300 rounded-md">
+
+      <select
+        value={roleFilter}
+        onChange={(e) => onRoleChange(e.target.value)}
+        className="p-2 border border-gray-300 rounded-md w-full sm:w-48"
+      >
         <option value="">Filter by Role</option>
         <option value="admin">Administrator</option>
         <option value="user">User</option>

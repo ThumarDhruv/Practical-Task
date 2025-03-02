@@ -7,7 +7,7 @@ const UserViewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) =>
-    state.users.users.find((u) => u.id === Number(id))
+    state.users.users.find((u) => u.id === id)
   );
 
   if (!user) {
@@ -26,6 +26,15 @@ const UserViewPage: React.FC = () => {
         </p>
         <p>
           <strong>Role:</strong> {user.role}
+        </p>
+        <p>
+          <strong>Date of Birth:</strong> {user.dob}
+        </p>
+        <p>
+          <strong>Gender:</strong> {user.gender}
+        </p>
+        <p>
+          <strong>Status:</strong> {user.status}
         </p>
         <button
           onClick={() => navigate("/users")}

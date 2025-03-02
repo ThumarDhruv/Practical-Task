@@ -1,53 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser, fetchUsers } from "../store/userSlice";
+import { fetchUsers, modifyUser } from "../store/userSlice";
 import { RootState, AppDispatch } from "../store/store";
 import { User } from "../types";
 
 const UserEditPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>(); // ✅ Ensure id is a string
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  // ✅ Fix Redux state access
   const user = useSelector((state: RootState) =>
-    state.users.users.find((u) => u.id === Number(id))
+    state.users.users.find((u) => u.id === id)
   );
 
-  // ✅ Fix initial form state
-  const [formData, setFormData] = useState<User>({
-    id: 0,
-    name: "",
-    email: "",
-    role: "",
-  });
+  const [formData, setFormData] = useState<User | undefined>(undefined);
 
-  // ✅ Fetch user if not available in state
   useEffect(() => {
     if (!user) {
-      dispatch(fetchUsers()); // Fetch users if not already loaded
-    } else {
+      dispatch(fetchUsers()); // Fetch only if users are missing
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user) {
       setFormData(user);
     }
-  }, [dispatch, id, user]);
-
-  // ✅ Handle input change
+  }, [user]);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
+    if (!formData) return;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(updateUser({ id: Number(id), user: formData })); // ✅ Dispatch with payload
-    navigate("/users"); // Redirect to user list
+    if (formData && id) {
+      dispatch(modifyUser({ id, user: formData }));
+      navigate("/users");
+    }
   };
 
-  if (!user) {
-    return <p className="text-center mt-6">User not found.</p>;
+  if (!formData) {
+    return <p className="text-center mt-6">Loading user data...</p>;
   }
 
   return (
