@@ -10,10 +10,8 @@ export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Create Mock Adapter
-const mock = new MockAdapter(api, { delayResponse: 500 }); // Simulate network delay
+const mock = new MockAdapter(api, { delayResponse: 500 });
 
-// Mock User Data (Stored in LocalStorage)
 const getLocalUsers = (): User[] => {
   return JSON.parse(localStorage.getItem("users") || "[]");
 };
@@ -22,13 +20,11 @@ const saveLocalUsers = (users: User[]) => {
   localStorage.setItem("users", JSON.stringify(users));
 };
 
-// 📌 Mock GET: Fetch Users
 mock.onGet("/users").reply(() => {
   const users = getLocalUsers();
   return [200, users];
 });
 
-//  Mock POST: Add User
 mock.onPost("/users").reply((config) => {
   const newUser: Omit<User, "id"> = JSON.parse(config.data);
   const users = getLocalUsers();
@@ -43,7 +39,6 @@ mock.onPost("/users").reply((config) => {
   return [201, createdUser];
 });
 
-//  Mock PUT: Update User
 mock.onPut(/\/users\/\d+/).reply((config) => {
   const id = config.url!.split("/").pop();
   const updatedUser: Partial<User> = JSON.parse(config.data);
@@ -55,7 +50,6 @@ mock.onPut(/\/users\/\d+/).reply((config) => {
   return [200, users.find((u) => u.id === id)];
 });
 
-//  Mock DELETE: Delete User
 mock.onDelete(/\/users\/\d+/).reply((config) => {
   const id = config.url!.split("/").pop();
   let users = getLocalUsers();

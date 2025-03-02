@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
-import { loginUser } from "../api/auth"; // ✅ Mock API
+import { loginUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState(""); // ✅ Store email input
-  const [password, setPassword] = useState(""); // ✅ Store password input
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const dispatch = useDispatch();
@@ -17,13 +17,11 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      // ✅ Pass email & password to loginUser
       const response = await loginUser(email, password);
 
       if (response.token) {
-        // ✅ Fixed response handling
         localStorage.setItem("token", response.token);
-        dispatch(login(response.token)); // ✅ Dispatch token to Redux store
+        dispatch(login(response.token));
         navigate("/dashboard");
       } else {
         setError("Invalid response from server. Token not received.");
@@ -64,8 +62,8 @@ const LoginPage: React.FC = () => {
                 type="email"
                 className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-blue-500"
                 placeholder="Enter your email"
-                value={email} // ✅ Controlled input
-                onChange={(e) => setEmail(e.target.value)} // ✅ Update email state
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -77,8 +75,8 @@ const LoginPage: React.FC = () => {
                 type="password"
                 className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-blue-500"
                 placeholder="Enter your password"
-                value={password} // ✅ Controlled input
-                onChange={(e) => setPassword(e.target.value)} // ✅ Update password state
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>

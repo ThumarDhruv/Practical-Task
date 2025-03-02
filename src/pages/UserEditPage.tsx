@@ -6,32 +6,28 @@ import { RootState, AppDispatch } from "../store/store";
 import { User } from "../types";
 
 const UserEditPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // ✅ Ensure id is a string
+  const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  // ✅ Find user by ID
   const user = useSelector((state: RootState) =>
     state.users.users.find((u) => u.id === id)
   );
 
-  // ✅ Use undefined instead of null to prevent unnecessary updates
   const [formData, setFormData] = useState<User | undefined>(undefined);
 
-  // ✅ Fetch users only if missing, and set formData only when user changes
   useEffect(() => {
     if (!user) {
-      dispatch(fetchUsers()); // Fetch only if users are missing
+      dispatch(fetchUsers());
     }
   }, [dispatch, user]);
 
   useEffect(() => {
     if (user) {
-      setFormData(user); // Set form data only when user is available
+      setFormData(user);
     }
-  }, [user]); // ✅ Only run when user changes
+  }, [user]);
 
-  // ✅ Handle input change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -39,12 +35,11 @@ const UserEditPage: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData && id) {
-      dispatch(modifyUser({ id, user: formData })); // ✅ Dispatch update action
-      navigate("/users"); // ✅ Navigate after update
+      dispatch(modifyUser({ id, user: formData })); //  Dispatch update action
+      navigate("/users"); //  Navigate after update
     }
   };
 

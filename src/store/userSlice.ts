@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { getUsers, addUser, updateUser, deleteUser } from "../api/userApi";
 import { User } from "../types";
 
-// 🚀 Fetch Users (LocalStorage First)
 export const fetchUsers = createAsyncThunk<User[]>(
   "users/fetchUsers",
   async () => {
@@ -10,7 +9,6 @@ export const fetchUsers = createAsyncThunk<User[]>(
   }
 );
 
-// ➕ Add New User
 export const createUser = createAsyncThunk<User, User>(
   "users/addUser",
   async (user) => {
@@ -18,7 +16,6 @@ export const createUser = createAsyncThunk<User, User>(
   }
 );
 
-// 🔄 Update User
 export const modifyUser = createAsyncThunk<User, { id: string; user: User }>(
   "users/updateUser",
   async ({ id, user }) => {
@@ -26,7 +23,6 @@ export const modifyUser = createAsyncThunk<User, { id: string; user: User }>(
   }
 );
 
-// ❌ Delete User
 export const removeUser = createAsyncThunk<string, string>(
   "users/deleteUser",
   async (id) => {
@@ -42,16 +38,14 @@ const userSlice = createSlice({
     users: [] as User[],
     loading: false,
     error: null as string | null,
-    searchQuery: "", // 🔍 Search Query State
-    roleFilter: "", // 🎭 Role Filter State
+    searchQuery: "",
+    roleFilter: "",
   },
   reducers: {
-    // ✅ Set Search Query
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
 
-    // ✅ Set Role Filter
     setRoleFilter: (state, action: PayloadAction<string>) => {
       state.roleFilter = action.payload;
     },
@@ -85,6 +79,5 @@ const userSlice = createSlice({
   },
 });
 
-// ✅ Export Reducers
 export const { setSearchQuery, setRoleFilter } = userSlice.actions;
 export default userSlice.reducer;

@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchUsers, removeUser } from "../store/userSlice";
 import UserTable from "../components/UserTable";
-import SearchFilter from "../components/SeachFliter"; // ✅ Fixed typo in import
+import SearchFilter from "../components/SeachFliter";
 import { RootState, useAppDispatch } from "../store/store";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { exportUsersToCSV } from "../utils/exportToCSV";
+import {
+  FaSignOutAlt,
+  FaDownload,
+  FaUserPlus,
+  FaTrashAlt,
+} from "react-icons/fa";
 import { User } from "../types";
 
 const UserList: React.FC = () => {
@@ -18,7 +24,7 @@ const UserList: React.FC = () => {
   );
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortField, setSortField] = useState<keyof User>("name"); // ✅ Enforce correct type
+  const [sortField, setSortField] = useState<keyof User>("name");
   const [sortOrder, setSortOrder] = useState("asc");
   const [roleFilter, setRoleFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,7 +37,7 @@ const UserList: React.FC = () => {
 
   const handleDelete = (id: string | number) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      dispatch(removeUser(id.toString())); // ✅ Convert to string
+      dispatch(removeUser(id.toString()));
     }
   };
 
@@ -97,7 +103,7 @@ const UserList: React.FC = () => {
           onClick={handleLogout}
           className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
         >
-          Logout
+          <FaSignOutAlt className="mr-2" /> Logout
         </button>
       )}
 
@@ -134,27 +140,29 @@ const UserList: React.FC = () => {
         </select>
       </div>
 
-      <button
-        onClick={handleExportCSV}
-        className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-      >
-        Export to CSV
-      </button>
+      <div className="flex gap-4 mb-4">
+        <button
+          onClick={handleExportCSV}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
+        >
+          <FaDownload className="mr-2" /> Export to CSV
+        </button>
 
-      <button
-        onClick={() => navigate("/users/add")}
-        className="mb-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700"
-      >
-        Add User
-      </button>
+        <button
+          onClick={() => navigate("/users/add")}
+          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
+        >
+          <FaUserPlus className="mr-2" /> Add User
+        </button>
 
-      <button
-        onClick={handleDeleteSelected}
-        className="mb-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700"
-        disabled={selectedUsers.size === 0}
-      >
-        Delete Selected
-      </button>
+        <button
+          onClick={handleDeleteSelected}
+          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center"
+          disabled={selectedUsers.size === 0}
+        >
+          <FaTrashAlt className="mr-2" /> Delete Selected
+        </button>
+      </div>
 
       {loading ? (
         <p>Loading users...</p>

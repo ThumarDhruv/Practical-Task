@@ -14,12 +14,12 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
-    auth: persistedAuthReducer, // ✅ Persist authentication state
+    auth: persistedAuthReducer,
     users: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // 🚀 Fix non-serializable value error
+      serializableCheck: false,
     }),
 });
 
@@ -27,5 +27,4 @@ export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-// ✅ Fix: Strongly typed dispatch
 export const useAppDispatch: () => AppDispatch = useDispatch;
