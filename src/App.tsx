@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import store from "./store/store";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import "./index.css";
 const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   {
